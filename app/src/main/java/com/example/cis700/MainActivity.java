@@ -31,7 +31,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     Sensor acclereometer,mGyro,mMagno,mTemp,mPressure,mHumid,mlight;
     TextView xval,yval,zval,gxval,gyval,gzval,mxval,myval,mzval,temp,pressure,light,humi;
     EditText subId;
-    Button save;
+    Button save,start;
+    boolean pressed_flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,45 +53,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         humi=(TextView)findViewById(R.id.h_val);
         subId=(EditText)findViewById(R.id.subID);
         save=(Button)findViewById(R.id.savebtn);
+        start=(Button)findViewById(R.id.strbtn);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(subId.getText()==null){
-                    Toast.makeText(MainActivity.this, "Enter Subject ID", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-hh-mm-ss");
-                    String format = simpleDateFormat.format(new Date());
-                    String entry = format+xval.getText().toString() + "," + yval.getText().toString() + "," + zval.getText().toString() + ",";
-                    try {
+                pressed_flag=false;
+                Toast.makeText(getBaseContext(), "Data saved", Toast.LENGTH_LONG).show();
 
-                        File sdCard = Environment.getExternalStorageDirectory();
-                        File dir = new File(sdCard.getAbsolutePath() + "/sean");
-                        Boolean dirsMade = dir.mkdir();
-                        //System.out.println(dirsMade);
-                        Log.v("Accel", dirsMade.toString());
+            }
+        });
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pressed_flag=true;
 
-                        File file = new File(dir, "output"+subId.getText()+".csv");
-                        FileOutputStream f;
-                        f = new FileOutputStream(file);
-
-
-                        try {
-                            f.write(entry.getBytes());
-                            f.flush();
-                            f.close();
-                            Toast.makeText(getBaseContext(), "Data saved", Toast.LENGTH_LONG).show();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-
-
-                }
             }
         });
 
@@ -184,6 +160,45 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             xval.setText(""+event.values[0]);
             yval.setText(""+event.values[1]);
             zval.setText(""+event.values[2]);
+            if(pressed_flag){
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-hh-mm-ss");
+                String format = simpleDateFormat.format(new Date());
+                String entry = format+xval.getText().toString() + "," + yval.getText().toString() + "," + zval.getText().toString() + "\n";
+                if(subId.getText().toString().equals("")){
+                    Toast.makeText(MainActivity.this, "Enter Subject ID", Toast.LENGTH_SHORT).show();
+                }
+                else{
+
+                    try {
+
+                        String baseDir = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+                        String fileName = "output"+subId.getText().toString()+".csv";
+                        String filePath = baseDir + File.separator + fileName;
+                        //Boolean dirsMade = dir.mkdir();
+                        //System.out.println(dirsMade);
+                        //Log.v("Accel", dirsMade.toString());
+
+                        File file = new File(filePath);
+                        FileOutputStream f = new FileOutputStream(file, true);
+
+
+                        try {
+                            f.write(entry.getBytes());
+                            f.flush();
+                            f.close();
+                            //Toast.makeText(getBaseContext(), "Data saved", Toast.LENGTH_LONG).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+            }
 
         }
         if(sensor.getType()==Sensor.TYPE_GYROSCOPE){

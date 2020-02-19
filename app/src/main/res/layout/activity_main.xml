@@ -368,7 +368,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/savebtn"
-                android:text="Save"/>
+                android:text="Stop"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/strbtn"
+                android:text="start"/>
 
         </LinearLayout>
         </LinearLayout>

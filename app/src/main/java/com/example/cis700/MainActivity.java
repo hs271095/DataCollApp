@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             if(pressed_flag){
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-hh-mm-ss");
                 String format = simpleDateFormat.format(new Date());
-                String entry = format+xval.getText().toString() + "," + yval.getText().toString() + "," + zval.getText().toString() + "\n";
+                String entry = format+","+xval.getText().toString() + "," + yval.getText().toString() + "," + zval.getText().toString() + "\n";
                 if(subId.getText().toString().equals("")){
                     Toast.makeText(MainActivity.this, "Enter Subject ID", Toast.LENGTH_SHORT).show();
                 }
